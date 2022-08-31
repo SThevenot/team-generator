@@ -1,0 +1,30 @@
+{
+  "name": "team-generator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SThevenot/team-generator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "inquirer": "8.2.4"
+  },
+  "bugs": {
+    "url": "https://github.com/SThevenot/team-generator/issues"
+  },
+  "devDependencies": {
+    "jest": "^24.8.0"
+  },
+  "homepage": "https://github.com/SThevenot/team-generator#readme"
+}
