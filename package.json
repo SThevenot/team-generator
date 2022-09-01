@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "directories": {
+    "lib": "lib",
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -16,15 +17,14 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "chalk": "^2.4.1",
-    "inquirer": "8.2.4"
-  },
   "bugs": {
     "url": "https://github.com/SThevenot/team-generator/issues"
   },
-  "devDependencies": {
-    "jest": "^24.8.0"
+  "homepage": "https://github.com/SThevenot/team-generator#readme",
+  "dependencies": {
+    "inquirer": "^8.2.4"
   },
-  "homepage": "https://github.com/SThevenot/team-generator#readme"
+  "devDependencies": {
+    "jest": "^29.0.1"
+  }
 }
