@@ -6,6 +6,9 @@ const Employee = require("./lib/Employee");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
 const Manager = require("./lib/Manager");
+let dataVar = "";
+const temp = require("./src/template");
+const membersArray = [];
 
 const questions = [
   "What is the team manager's name?",
@@ -23,7 +26,7 @@ const questions = [
   "What is the intern's school?",
 ];
 
-const getStart = () => {
+var getStart = () => {
   inquirer
     .prompt([
       {
@@ -48,15 +51,14 @@ const getStart = () => {
       },
     ])
     .then((data) => {
-      console.log(data);
       var manager = new Manager(
         data.managerName,
         data.managerId,
         data.managerEmail,
         data.managerOffice
       );
-      console.log(manager);
-      console.log(manager.name);
+      membersArray.push(manager);
+      dataVar = data;
       getMenu();
     });
 };
@@ -85,7 +87,6 @@ const getMenu = () => {
       }
     });
 };
-
 const getEngineer = () => {
   console.log("ENGINEER");
   inquirer
@@ -119,7 +120,7 @@ const getEngineer = () => {
         data.engineerEmail,
         data.engineerGithub
       );
-      console.log(engineer);
+      membersArray.push(engineer);
       getMenu();
     });
 };
@@ -157,25 +158,52 @@ const getIntern = () => {
         data.internEmail,
         data.internSchool
       );
+      membersArray.push(intern);
       console.log(intern);
       getMenu();
     });
 };
 
-function getFinish(data) {
-  console.log(data);
-  return `<!DOCTYPE html>
+function getFinish() {
+  for (var i = 0; i < membersArray.length; i++) {
+    return `<div cla>`
+  }
+  return `<!-- @format -->
+
+  <!DOCTYPE html>
   <html lang="en">
-  <head>
-      <meta charset="UTF-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Document</title>
-  </head>
-  <body>
-      <p>${manager.name}</p>
-  </body>
-  </html>`;
+    <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx"
+        crossorigin="anonymous"
+      />
+      <title>Team Generator</title>
+    </head>
+    <body>
+      <header>
+        <nav class="navbar navbar-expand-lg bg-primary">
+          <h1 class="ps-5">Team Generator</h1>
+        </nav>
+      </header>
+      <div>
+          <div class="card text-bg-primary mb-3" style="max-width: 18rem;">
+              <div class="card-header">${dataVar.managerName} Team Manager</div>
+              <div class="card-body">
+                  <ul class="list-group list-group-flush">
+                      <li class="list-group-item">ID: ${dataVar.managerId}</li>
+                      <li class="list-group-item">Email: mailto:${dataVar.managerEmail}</li>
+                      <li class="list-group-item">office number: ${dataVar.managerOffice}</li>
+                    </ul>
+              </div>
+      </div>
+    </body>
+  </html>
+  `;
 }
 
 getStart();
