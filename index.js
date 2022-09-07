@@ -2,13 +2,18 @@
 
 const fs = require("fs");
 const inquirer = require("inquirer");
-const Employee = require("./lib/Employee");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
 const Manager = require("./lib/Manager");
-let dataVar = "";
-const temp = require("./src/template");
+const createTeam = require("./src/template");
 const membersArray = [];
+var dataVar = "";
+var managerText;
+var engineerText;
+var internText;
+var intern;
+var engineer;
+var manager;
 
 const questions = [
   "What is the team manager's name?",
@@ -26,7 +31,7 @@ const questions = [
   "What is the intern's school?",
 ];
 
-var getStart = () => {
+const getStart = () => {
   inquirer
     .prompt([
       {
@@ -57,8 +62,13 @@ var getStart = () => {
         data.managerEmail,
         data.managerOffice
       );
-      membersArray.push(manager);
       dataVar = data;
+      console.log(manager.name);
+      membersArray.push("manager");
+      console.log(membersArray);
+      fs.writeFile("./index.html", getFinish(data), (err) => {
+        if (err) throw err;
+      });
       getMenu();
     });
 };
@@ -75,20 +85,16 @@ const getMenu = () => {
     ])
     .then((data) => {
       console.log(data.menu);
-      fs.writeFile("./index.html", getFinish(data), (error) => {
-        if (error) throw error;
-      });
       if (data.menu === "Add an engineer") {
-        return getEngineer();
+        getEngineer();
       } else if (data.menu === "Add an intern") {
-        return getIntern();
+        getIntern();
       } else if (data.menu === "Finish") {
-        return getFinish();
+        console.log("congrats!");
       }
     });
 };
 const getEngineer = () => {
-  console.log("ENGINEER");
   inquirer
     .prompt([
       {
@@ -113,14 +119,17 @@ const getEngineer = () => {
       },
     ])
     .then((data) => {
-      console.log(data);
-      const engineer = new Engineer(
+      var engineer = new Engineer(
         data.engineerName,
         data.engineerId,
         data.engineerEmail,
         data.engineerGithub
       );
-      membersArray.push(engineer);
+      dataVar = data;
+      membersArray.push("engineer");
+      fs.writeFile("./index.html", getFinish(data), (err) => {
+        if (err) throw err;
+      });
       getMenu();
     });
 };
@@ -152,58 +161,110 @@ const getIntern = () => {
     ])
     .then((data) => {
       console.log(data);
-      const intern = new Intern(
+      var intern = new Intern(
         data.internName,
         data.internId,
         data.internEmail,
         data.internSchool
       );
-      membersArray.push(intern);
-      console.log(intern);
+      dataVar = data;
+      console.log(intern.name);
+      membersArray.push("intern");
+      fs.writeFile("./index.html", getFinish(data), (err) => {
+        if (err) throw err;
+      });
       getMenu();
     });
 };
 
+const boilerplateArr = [];
+
+
+
 function getFinish() {
   for (var i = 0; i < membersArray.length; i++) {
-    return `<div cla>`
+    if (membersArray.length === 1) {
+      getManagerHtml();
+      boilerplateArr.push(managerText);
+    } else if (membersArray.slice(-1) == "engineer") {
+      getEngineerHtml();
+      boilerplateArr.push(engineerText);
+    } else if (membersArray.slice(-1) == "intern") {
+      getInternHtml();
+      boilerplateArr.push(internText);
+    }
   }
+  const finalArray = Array.from(new Set(boilerplateArr));
+
   return `<!-- @format -->
 
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-        integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx"
-        crossorigin="anonymous"
-      />
-      <title>Team Generator</title>
-    </head>
-    <body>
-      <header>
-        <nav class="navbar navbar-expand-lg bg-primary">
-          <h1 class="ps-5">Team Generator</h1>
-        </nav>
-      </header>
-      <div>
-          <div class="card text-bg-primary mb-3" style="max-width: 18rem;">
-              <div class="card-header">${dataVar.managerName} Team Manager</div>
-              <div class="card-body">
-                  <ul class="list-group list-group-flush">
-                      <li class="list-group-item">ID: ${dataVar.managerId}</li>
-                      <li class="list-group-item">Email: mailto:${dataVar.managerEmail}</li>
-                      <li class="list-group-item">office number: ${dataVar.managerOffice}</li>
-                    </ul>
-              </div>
-      </div>
-    </body>
-  </html>
-  `;
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx"
+          crossorigin="anonymous"
+        />
+        <title>Team Generator</title>
+      </head>
+      <body>
+        <header>
+          <nav class="navbar navbar-expand-lg bg-primary">
+            <h1 class="ps-5">Team Generator</h1>
+          </nav>
+        </header>
+        <div>
+           ${finalArray}
+        </div>
+        </div>
+      </body>
+    </html>`;
+}
+
+function getManagerHtml() {
+  managerText = `<div class="card text-bg-primary mb-3" style="max-width: 18rem;">
+  <div class="card-header">${dataVar.managerName} Team Manager</div>
+  <div class="card-body">
+      <ul class="list-group list-group-flush">
+          <li class="list-group-item">ID: ${dataVar.managerId}</li>
+          <li class="list-group-item"><a href="mailto:${dataVar.managerEmail}">Email:${dataVar.managerEmail}</a></li>
+          <li class="list-group-item">office number: ${dataVar.managerOffice}</li>
+        </ul>
+  </div>
+  </div>`;
+  return;
+}
+
+function getEngineerHtml() {
+  engineerText = `<div class="card text-bg-success mb-3" style="max-width: 18rem;">
+  <div class="card-header">${dataVar.engineerName} Engineer</div>
+  <div class="card-body">
+      <ul class="list-group list-group-flush">
+          <li class="list-group-item">ID: ${dataVar.engineerId}</li>
+          <li class="list-group-item"><a href="mailto:${dataVar.engineerEmail}">Email:${dataVar.engineerEmail}</a></li>
+          <li class="list-group-item"><a href="https://github.com/${dataVar.engineerGithub}"Github: ${dataVar.engineerGithub}</li>
+        </ul>
+  </div>
+  </div>`;
+  return;
+}
+
+function getInternHtml() {
+  internText = `<div class="card text-bg-danger mb-3" style="max-width: 18rem;">
+  <div class="card-header">${dataVar.internName} Intern</div>
+  <div class="card-body">
+      <ul class="list-group list-group-flush">
+          <li class="list-group-item">ID: ${dataVar.internId}</li>
+          <li class="list-group-item"><a href="mailto:${dataVar.internEmail}">Email:${dataVar.internEmail}</a></li>
+          <li class="list-group-item">School: ${dataVar.internSchool}</li>
+        </ul>
+  </div>
+  </div>`;
 }
 
 getStart();
